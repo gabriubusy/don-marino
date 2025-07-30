@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #173a8f;
+  --secondary-color: #ff6700;
+  --background-color: #f8f9fa;
+  --text-color: #333333;
+}
+
+body {
+  color: var(--text-color);
+  background: var(--background-color);
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-all;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-all;
+  }
+  
+  .chat-bubble-user {
+    @apply bg-primary text-white p-3 rounded-lg rounded-br-none max-w-[80%] ml-auto mb-2;
+  }
+  
+  .chat-bubble-bot {
+    @apply bg-gray-100 text-text p-3 rounded-lg rounded-bl-none max-w-[80%] mr-auto mb-2;
+  }
+}
