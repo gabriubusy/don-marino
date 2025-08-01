@@ -78,7 +78,7 @@ export default function Home() {
           <div className="md:w-1/2 flex justify-center">
             <div className="relative w-full max-w-md">
               <Image 
-                src="/hero-image.png" 
+                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
                 alt="Don Mariño en acción" 
                 width={500} 
                 height={400}
@@ -145,7 +145,7 @@ export default function Home() {
               <div className="md:w-1/2 order-1 md:order-2 flex justify-center">
                 <div className="relative w-full max-w-sm">
                   <Image 
-                    src="/step1.png" 
+                    src="https://images.unsplash.com/photo-1577563908411-5077b6dc7624?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
                     alt="Conversación con Don Mariño" 
                     width={300} 
                     height={250}
@@ -159,7 +159,7 @@ export default function Home() {
               <div className="md:w-1/2 flex justify-center">
                 <div className="relative w-full max-w-sm">
                   <Image 
-                    src="/step2.png" 
+                    src="https://images.unsplash.com/photo-1516110833967-0b5716ca1387?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
                     alt="Don Mariño procesando información" 
                     width={300} 
                     height={250}
@@ -197,7 +197,7 @@ export default function Home() {
               <div className="md:w-1/2 order-1 md:order-2 flex justify-center">
                 <div className="relative w-full max-w-sm">
                   <Image 
-                    src="/step3.png" 
+                    src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1772&q=80" 
                     alt="Lista de recordatorios" 
                     width={300} 
                     height={250}
@@ -232,13 +232,6 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <Image 
-                src="/logo-white.png" 
-                alt="Don Mariño Logo" 
-                width={40} 
-                height={40}
-                className="mr-2" 
-              />
               <span className="text-xl font-bold">Don Mariño</span>
             </div>
             <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-8">
