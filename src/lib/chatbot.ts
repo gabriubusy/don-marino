@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { supabase, createReminder, createConversation, createIntent, createMessage } from './supabase';
 import { ChatResponse } from './types';
+import { saveLocalReminder, ReminderItem } from './localStorage';
 import nlp from 'compromise';
 // @ts-ignore - Plugin types are not properly defined
 import dates from 'compromise-dates';
@@ -422,12 +423,12 @@ function extractParameters(message: string, intent: string): any {
     
     // Fallback to regex if NLP failed
     if (!params.title) {
-      const titleMatch = message.match(/(?:recordar|recordarme|recordatorio|tarea|evento)\s(?:que|para|sobre|de)?\s(.+?)(?:para\sel|en|el|a las|por la|antes del|después del|hasta el|\s\d{1,2}\sde|\s\d{1,2}\/|$)/i);
+      const titleMatch = message.match(/(?:recordar|recordarme|recordatorio|tarea|evento|programar)\s(?:que|para|sobre|de|el)?\s(.+?)(?:para\sel|en|el|a las|por la|antes del|después del|hasta el|\s\d{1,2}\sde|\s\d{1,2}\/|$)/i);
       if (titleMatch && titleMatch[1]) {
         params.title = titleMatch[1].trim();
       } else {
         // Fallback: use the message as title but remove intent keywords
-        params.title = message.replace(/record[aá](me|r|rme|rnos)?|crear\s(un\s)?recordatorio|nueva\starea|nuevo\sevento|agregar\srecordatorio/gi, '').trim();
+        params.title = message.replace(/record[aá](me|r|rme|rnos)?|crear\s(un\s)?recordatorio|nueva\starea|nuevo\sevento|agregar\srecordatorio|programar(\sel)?/gi, '').trim();
       }
     }
 
@@ -530,14 +531,59 @@ export async function processMessage(message: string): Promise<ChatResponse> {
     switch (intentName) {
       case 'CREATE_REMINDER':
         if (parameters.title && parameters.date) {
-          return {
-            text: `He entendido que quieres crear un recordatorio sobre "${parameters.title}" para el ${new Date(parameters.date).toLocaleDateString('es-ES')}.`,
-            reminder: {
+          // Crear el objeto recordatorio para la base de datos y localStorage
+          const reminderData = {
+            title: parameters.title,
+            description: '',
+            due_date: parameters.date,
+            priority: parameters.priority || 1,
+            status: 'pending' as 'pending',
+            user_id: 'system', // Debería ser reemplazado por el ID del usuario actual
+            created_at: new Date().toISOString()
+          };
+          
+          try {
+            let savedReminderId: string | undefined;
+            
+            // Intentar guardar el recordatorio en la base de datos
+            try {
+              const { data: reminderResult, error } = await createReminder(reminderData);
+              if (!error && reminderResult) {
+                savedReminderId = reminderResult.id;
+              } else {
+                console.warn('No se pudo guardar en la base de datos, usando solo localStorage');
+              }
+            } catch (dbError) {
+              console.warn('Error al guardar en la base de datos, usando solo localStorage:', dbError);
+            }
+            
+            // Guardar siempre en localStorage (como respaldo)
+            const localReminderData: Omit<ReminderItem, 'id'> = {
               title: parameters.title,
               description: '',
               date: parameters.date,
-            }
-          };
+              priority: parameters.priority || 1,
+              status: 'pending',
+              created_at: new Date().toISOString()
+            };
+            
+            const localReminder = saveLocalReminder(localReminderData);
+            
+            return {
+              text: `He creado un recordatorio sobre "${parameters.title}" para el ${new Date(parameters.date).toLocaleDateString('es-ES')}.`,
+              reminder: {
+                title: parameters.title,
+                description: '',
+                date: parameters.date,
+                id: savedReminderId || localReminder.id
+              }
+            };
+          } catch (err) {
+            console.error('Error inesperado al crear recordatorio:', err);
+            return {
+              text: 'Lo siento, ha ocurrido un error inesperado al guardar tu recordatorio. Por favor, inténtalo de nuevo.'
+            };
+          }
         } else if (parameters.title) {
           return {
             text: 'He captado el tema del recordatorio, pero necesito saber cuándo debo recordártelo. ¿Para qué fecha es este recordatorio?'
