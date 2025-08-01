@@ -569,13 +569,17 @@ export async function processMessage(message: string): Promise<ChatResponse> {
             
             const localReminder = saveLocalReminder(localReminderData);
             
+            // Guardar el ID en localStorage para referencia futura si es necesario
+            if (savedReminderId) {
+              localStorage.setItem('last_reminder_id', savedReminderId);
+            }
+            
             return {
               text: `He creado un recordatorio sobre "${parameters.title}" para el ${new Date(parameters.date).toLocaleDateString('es-ES')}.`,
               reminder: {
                 title: parameters.title,
                 description: '',
-                date: parameters.date,
-                id: savedReminderId || localReminder.id
+                date: parameters.date
               }
             };
           } catch (err) {

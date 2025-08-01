@@ -5,10 +5,10 @@ export interface ReminderItem {
   id: string;
   title: string;
   description: string;
-  date: string;
+  date: string;   // Equivalente a due_date en la base de datos
   priority: number;
-  status: 'pending' | 'completed' | 'canceled';
-  created_at: string;
+  status: 'pending' | 'completed' | 'canceled';  // Campo local que no existe en la base de datos
+  created_at: string;  // Campo local que no existe en la base de datos
 }
 
 const REMINDERS_KEY = 'don_marino_reminders';

@@ -13,12 +13,9 @@ const convertToSupabaseFormat = (reminderItem: ReminderItem): Database['public']
     description: reminderItem.description || '',
     due_date: reminderItem.date,
     priority: reminderItem.priority,
-    status: reminderItem.status,
     user_id: 'local', // Marcamos estos recordatorios como locales
-    created_at: reminderItem.created_at,
-    completed_at: null,
     recurrence: null,
-    updated_at: null
+    group_id: null
   };
 };
 
@@ -64,11 +61,11 @@ const LocalRemindersContainer: React.FC = () => {
   const handleUpdateReminder = (updatedReminder: Database['public']['Tables']['Reminder']['Row']) => {
     const localUpdated = updateLocalReminder(updatedReminder.id, {
       title: updatedReminder.title,
-      description: updatedReminder.description,
+      description: updatedReminder.description || '',
       date: updatedReminder.due_date,
       priority: updatedReminder.priority,
-      status: updatedReminder.status as 'pending' | 'completed' | 'canceled',
-      created_at: updatedReminder.created_at
+      status: 'pending', // Valor por defecto ya que no existe en el tipo Reminder
+      created_at: new Date().toISOString() // Fecha actual como valor por defecto
     });
 
     if (localUpdated) {
