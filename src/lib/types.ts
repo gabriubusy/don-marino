@@ -19,3 +19,31 @@ export type ChatResponse = {
   text: string;
   reminder?: Omit<Reminder, 'id' | 'completed' | 'createdAt'>;
 };
+
+export interface Role {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface Permission {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface UserRole {
+  user_id: string;
+  role_id: string;
+  permissions?: string[];
+  Role?: Role;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  avatar?: string;
+  address?: string;
+  phone?: string;
+  roles?: UserRole[];
+}

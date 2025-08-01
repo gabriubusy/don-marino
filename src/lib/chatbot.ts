@@ -37,6 +37,78 @@ const INTENT_EXAMPLES = {
     "¿Cuáles son mis próximos recordatorios?",
     "Necesito ver todas mis tareas"
   ],
+  GREETING: [
+    "Hola",
+    "Buenos días",
+    "Buenas tardes",
+    "Buenas noches",
+    "Qué tal",
+    "Cómo estás",
+    "Saludos",
+    "Hey"
+  ],
+  FAREWELL: [
+    "Adiós",
+    "Hasta luego",
+    "Chao",
+    "Nos vemos",
+    "Hasta pronto",
+    "Hasta mañana",
+    "Me voy"
+  ],
+  THANKS: [
+    "Gracias",
+    "Muchas gracias",
+    "Te lo agradezco",
+    "Gracias por tu ayuda"
+  ],
+  WEATHER: [
+    "¿Qué tiempo hace hoy?",
+    "¿Va a llover?",
+    "¿Cuál es el pronóstico del clima?",
+    "¿Cómo está el día afuera?",
+    "¿Hace frío?",
+    "¿Hace calor?"
+  ],
+  SMALL_TALK: [
+    "¿Cómo te llamas?",
+    "¿Quién eres?",
+    "Cuéntame sobre ti",
+    "¿Eres un robot?",
+    "¿Eres inteligente?",
+    "¿Dónde vives?",
+    "¿Qué haces en tu tiempo libre?",
+    "¿Tienes sentimientos?",
+    "¿Puedes pensar?"
+  ],
+  JOKES: [
+    "Cuéntame un chiste",
+    "Dime algo gracioso",
+    "Hazme reír",
+    "¿Sabes algún chiste?",
+    "Necesito reírme un poco"
+  ],
+  TIME_DATE: [
+    "¿Qué hora es?",
+    "¿Qué día es hoy?",
+    "¿En qué fecha estamos?",
+    "¿Cuánto falta para el fin de semana?",
+    "¿Qué día cae el próximo lunes?"
+  ],
+  ACTIVITIES_INFO: [
+    "¿Qué actividades hay disponibles?",
+    "Cuéntame sobre las actividades",
+    "Información sobre actividades",
+    "¿Qué puedo reservar?",
+    "¿Qué opciones de actividades tienen?"
+  ],
+  RESERVATIONS_HELP: [
+    "¿Cómo hago una reservación?",
+    "¿Cómo reservo una actividad?",
+    "Ayuda con reservaciones",
+    "Quiero reservar algo",
+    "Proceso de reserva"
+  ],
   HELP: [
     "Ayuda",
     "¿Cómo funcionas?",
@@ -356,6 +428,64 @@ export async function processMessage(message: string): Promise<ChatResponse> {
     
     const { data: intentResult } = await createIntent(intentData);
     
+    // Respuestas para cada intención
+    const responses: {[key: string]: string[]} = {
+      GREETING: [
+        "¡Hola! ¿Cómo estás hoy? ¿En qué puedo ayudarte?",
+        "¡Qué gusto saludarte! ¿Necesitas ayuda con algún recordatorio?",
+        "¡Bienvenido! Soy Don Mariño, tu asistente personal. ¿En qué puedo servirte hoy?",
+        "¡Hola! Estoy aquí para ayudarte con tus recordatorios y responder a tus preguntas."
+      ],
+      FAREWELL: [
+        "¡Hasta pronto! No olvides revisar tus recordatorios pendientes.",
+        "¡Adiós! Fue un placer ayudarte. Estaré aquí cuando me necesites.",
+        "¡Que tengas un excelente día! Recuerda que puedes volver cuando quieras.",
+        "¡Hasta la próxima! Estaré esperando para ayudarte con tus recordatorios."
+      ],
+      THANKS: [
+        "¡De nada! Es un placer poder ayudarte.",
+        "No hay de qué. Estoy aquí para lo que necesites.",
+        "¡Encantado de ser útil! ¿Hay algo más en lo que pueda ayudarte?",
+        "Para eso estoy. No dudes en pedirme ayuda cuando la necesites."
+      ],
+      WEATHER: [
+        "Lo siento, no tengo acceso a información del clima en tiempo real. ¿Te gustaría que te ayude a crear un recordatorio para revisar el pronóstico?",
+        "No puedo consultar el clima actual, pero puedo recordarte que revises el pronóstico si lo deseas.",
+        "Aunque no puedo decirte el tiempo actual, puedo ayudarte a crear un recordatorio para que te lleves un paraguas si hay posibilidad de lluvia."
+      ],
+      SMALL_TALK: [
+        "Soy Don Mariño, tu asistente virtual. Estoy aquí para ayudarte con tus recordatorios y conversar contigo sobre diversos temas.",
+        "Me especializo en ayudarte a recordar cosas importantes, pero también disfruto de una buena conversación. ¿Quieres contarme algo?",
+        "Soy un asistente virtual diseñado para hacer tu vida más fácil. Me encanta ayudar con recordatorios y charlar sobre diversos temas.",
+        "Mi propósito es asistirte con tus recordatorios diarios y ofrecerte una experiencia conversacional agradable. ¿En qué más estás interesado?"
+      ],
+      JOKES: [
+        "¿Qué hace una abeja en el gimnasio? ¡Zum-ba! 🐝",
+        "¿Por qué los peces no usan redes sociales? ¡Porque temen caer en la red! 🐟",
+        "¿Sabes por qué un libro de matemáticas se sentía triste? Porque tenía muchos problemas. 📚",
+        "¿Qué le dice un pez a otro pez? Nada. 🐠"
+      ],
+      TIME_DATE: [
+        "No tengo acceso a la fecha y hora actual, pero puedo ayudarte a crear un recordatorio para eventos importantes en tu calendario.",
+        "Mi sistema no me permite consultar la hora actual, pero puedo recordarte eventos importantes según la fecha que me indiques.",
+        "Aunque no puedo decirte qué día es hoy, puedo ayudarte a organizarte mejor con recordatorios para fechas importantes."
+      ],
+      ACTIVITIES_INFO: [
+        "En nuestra plataforma puedes encontrar diversas actividades para reservar. Te recomiendo visitar la sección principal para ver todas las opciones disponibles.",
+        "Tenemos actividades acuáticas, tours guiados, clases y muchas experiencias más. ¿Hay alguna categoría específica que te interese?",
+        "Las actividades están organizadas por categorías en nuestra plataforma. ¿Te gustaría que te recuerde explorar alguna sección específica?"
+      ],
+      RESERVATIONS_HELP: [
+        "Para hacer una reservación, debes seleccionar la actividad que te interesa y luego elegir la fecha y hora disponible. ¿Te gustaría que te cree un recordatorio para completar este proceso?",
+        "El proceso de reserva es sencillo: elige la actividad, selecciona fecha y hora, completa tus datos y confirma. ¿Necesitas que te recuerde revisar las opciones disponibles?",
+        "Puedes hacer reservaciones desde la página principal seleccionando la actividad deseada. ¿Te gustaría que te cree un recordatorio para explorar las actividades disponibles?"
+      ],
+      HELP: [
+        "Soy Don Mariño, tu asistente conversacional. Puedo ayudarte con:\n- Crear recordatorios (ej. 'Recuérdame llamar al médico mañana')\n- Responder preguntas sobre las actividades disponibles\n- Asistirte con información sobre reservaciones\n- Conversar sobre temas diversos\n- Contarte chistes para alegrarte el día\n¿En qué puedo ayudarte hoy?",
+        "Estoy aquí para asistirte principalmente con recordatorios y responder a tus preguntas. Puedo ayudarte a organizar tu agenda, informarte sobre actividades, guiarte en el proceso de reserva y mantener una conversación amena contigo."
+      ]
+    };
+    
     // Handle different intents
     switch (intentName) {
       case 'CREATE_REMINDER':
@@ -384,17 +514,36 @@ export async function processMessage(message: string): Promise<ChatResponse> {
         
       case 'LIST_REMINDERS':
         return {
-          text: 'Puedes ver tus recordatorios en la pestaña "Recordatorios".'
+          text: 'Puedes ver tus recordatorios en la pestaña "Recordatorios". ¿Hay algo específico que estés buscando?'
         };
-        
+      
+      case 'GREETING':
+      case 'FAREWELL':
+      case 'THANKS':
+      case 'WEATHER':
+      case 'SMALL_TALK':
+      case 'JOKES':
+      case 'TIME_DATE':
+      case 'ACTIVITIES_INFO':
+      case 'RESERVATIONS_HELP':
       case 'HELP':
+        // Seleccionar una respuesta aleatoria de la categoría
+        const categoryResponses = responses[intentName];
+        const randomIndex = Math.floor(Math.random() * categoryResponses.length);
         return {
-          text: 'Soy Don Mariño, tu asistente para recordatorios. Puedo ayudarte a crear y gestionar tus recordatorios de forma sencilla. Para crear un recordatorio, simplemente dime algo como "Recuérdame comprar leche mañana" o "Crear un recordatorio para la reunión del 15 de agosto". También puedes ver tus recordatorios organizados en la pestaña de Recordatorios.'
+          text: categoryResponses[randomIndex]
         };
         
       default:
+        // Respuestas por defecto cuando no se identifica la intención
+        const defaultResponses = [
+          "No he entendido completamente tu solicitud. ¿Puedes reformularla? Puedo ayudarte con recordatorios, información sobre actividades o responder preguntas generales.",
+          "Disculpa, no estoy seguro de entender. ¿Te gustaría crear un recordatorio, saber sobre actividades disponibles o hablar de otro tema?",
+          "Hmm, no logro captar lo que necesitas. Puedo ayudarte con recordatorios, darte información sobre actividades o simplemente charlar. ¿Qué prefieres?"
+        ];
+        
         return {
-          text: 'No he entendido completamente tu solicitud. ¿Puedes reformularla? Puedo ayudarte a crear recordatorios o mostrarte tus recordatorios actuales.'
+          text: defaultResponses[Math.floor(Math.random() * defaultResponses.length)]
         };
     }
   } catch (error) {

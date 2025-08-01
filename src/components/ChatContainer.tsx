@@ -17,7 +17,7 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ addReminder }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: '¡Hola! Soy Don Mariño, tu asistente para recordatorios. Puedes pedirme que guarde fechas importantes, eventos o tareas pendientes. ¿En qué puedo ayudarte hoy?',
+      text: '¡Hola! Soy Don Mariño, tu asistente personal. Puedo ayudarte con recordatorios, responderte sobre actividades disponibles, reservaciones, o simplemente charlar contigo. Incluso puedo contarte algún chiste si necesitas animarte un poco. ¿En qué te puedo ayudar hoy?',
       sender: 'bot',
       timestamp: Date.now(),
     },
@@ -287,8 +287,28 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ addReminder }) => {
             </button>
           </div>
           
-          <div className="mt-1 text-xs text-center text-gray-400">
-            Puedes pedirme que guarde recordatorios, eventos importantes o tareas pendientes
+          <div className="mt-3 text-xs text-center text-gray-500">
+            Prueba preguntar sobre:
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 mt-2 pb-2">
+            {[
+              "Cuéntame un chiste", 
+              "¿Qué actividades hay?", 
+              "¿Cómo hacer una reservación?",
+              "Recuérdame una tarea",
+              "¿Quién eres?"
+            ].map((suggestion, index) => (
+              <button
+                key={index}
+                className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs rounded-full transition-colors"
+                onClick={() => {
+                  setInput(suggestion);
+                  setTimeout(() => handleSendMessage(), 100);
+                }}
+              >
+                {suggestion}
+              </button>
+            ))}
           </div>
         </div>
       </div>
