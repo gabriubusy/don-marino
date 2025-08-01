@@ -12,6 +12,7 @@ export interface Reminder {
   date: string; // ISO format
   completed: boolean;
   createdAt: number;
+  priority?: 'high' | 'medium' | 'low';
 }
 
 export type ChatResponse = {

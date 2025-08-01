@@ -70,7 +70,7 @@ export default function Reminders() {
     const matchesSearch = 
       searchTerm === '' ||
       reminder.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      reminder.content?.toLowerCase().includes(searchTerm.toLowerCase());
+      reminder.description?.toLowerCase().includes(searchTerm.toLowerCase());
       
     return matchesFilter && matchesSearch;
   });
@@ -174,19 +174,15 @@ export default function Reminders() {
                       <p className={`text-sm font-medium ${reminder.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
                         {reminder.title}
                       </p>
-                      {reminder.content && (
+                      {reminder.description && (
                         <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                          {reminder.content}
+                          {reminder.description}
                         </p>
                       )}
                       <div className="mt-1 flex items-center">
                         <span className="text-xs text-gray-500">{reminder.date}</span>
-                        {reminder.time && (
-                          <span className="ml-2 text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
-                            {reminder.time}
-                          </span>
-                        )}
-                        {reminder.priority && (
+
+                        {reminder?.priority && (
                           <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
                             reminder.priority === 'high' 
                               ? 'bg-red-50 text-red-700' 
