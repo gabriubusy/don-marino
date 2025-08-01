@@ -89,13 +89,6 @@ const INTENT_EXAMPLES = {
     "¿Sabes algún chiste?",
     "Necesito reírme un poco"
   ],
-  TIME_DATE: [
-    "¿Qué hora es?",
-    "¿Qué día es hoy?",
-    "¿En qué fecha estamos?",
-    "¿Cuánto falta para el fin de semana?",
-    "¿Qué día cae el próximo lunes?"
-  ],
   ACTIVITIES_INFO: [
     "¿Qué actividades hay disponibles?",
     "Cuéntame sobre las actividades",
@@ -344,14 +337,6 @@ function fallbackIntentDetection(message: string): { intentName: string; paramet
       /tiempo\sactual/i,
       /pronostico\sactual/i
     ],
-    TIME_DATE: [
-      /fecha/i,
-      /hora/i,
-      /fecha\sactual/i,
-      /hora\sactual/i,
-      /fecha\sactual/i,
-      /hora\sactual/i
-    ],
     ACTIVITIES_INFO: [
       /actividades/i,
       /actividad/i,
@@ -498,11 +483,7 @@ export async function processMessage(message: string): Promise<ChatResponse> {
         "¿Sabes por qué un libro de matemáticas se sentía triste? Porque tenía muchos problemas. 📚",
         "¿Qué le dice un pez a otro pez? Nada. 🐠"
       ],
-      TIME_DATE: [
-        "No tengo acceso a la fecha y hora actual, pero puedo ayudarte a crear un recordatorio para eventos importantes en tu calendario.",
-        "Mi sistema no me permite consultar la hora actual, pero puedo recordarte eventos importantes según la fecha que me indiques.",
-        "Aunque no puedo decirte qué día es hoy, puedo ayudarte a organizarte mejor con recordatorios para fechas importantes."
-      ],
+
       ACTIVITIES_INFO: [
         "En nuestra plataforma puedes encontrar diversas actividades para reservar. Te recomiendo visitar la sección principal para ver todas las opciones disponibles.",
         "Tenemos actividades acuáticas, tours guiados, clases y muchas experiencias más. ¿Hay alguna categoría específica que te interese?",
@@ -600,7 +581,6 @@ export async function processMessage(message: string): Promise<ChatResponse> {
       case 'WEATHER':
       case 'SMALL_TALK':
       case 'JOKES':
-      case 'TIME_DATE':
       case 'ACTIVITIES_INFO':
       case 'HELP':
         // Seleccionar una respuesta aleatoria de la categoría
