@@ -2,16 +2,22 @@
 
 import React, { useState } from 'react';
 import { Database } from '@/lib/database.types';
+import EditReminderModal from './EditReminderModal';
+import DeleteReminderModal from './DeleteReminderModal';
 
 type Reminder = Database['public']['Tables']['Reminder']['Row'];
 
 interface RemindersListProps {
   reminders: Reminder[];
   deleteReminder: (id: string) => void;
+  updateReminder?: (updatedReminder: Reminder) => void;
 }
 
-const RemindersList: React.FC<RemindersListProps> = ({ reminders, deleteReminder }) => {
+const RemindersList: React.FC<RemindersListProps> = ({ reminders, deleteReminder, updateReminder }) => {
   const [selectedPriority, setSelectedPriority] = useState<number | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedReminder, setSelectedReminder] = useState<Reminder | null>(null);
   
   // Filter reminders by priority if selected
   const filteredReminders = selectedPriority !== null 
@@ -101,7 +107,7 @@ const RemindersList: React.FC<RemindersListProps> = ({ reminders, deleteReminder
                   <div className="text-sm text-gray-500">
                     <span>Fecha: </span>
                     <span className="font-medium">
-                      {new Date(reminder.due_date).toLocaleDateString()}
+                      {new Date(reminder.due_date).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
                     </span>
                     
                     {reminder.recurrence && (
@@ -111,18 +117,52 @@ const RemindersList: React.FC<RemindersListProps> = ({ reminders, deleteReminder
                     )}
                   </div>
                   
-                  <button
-                    onClick={() => deleteReminder(reminder.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    Eliminar
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        setSelectedReminder(reminder);
+                        setEditModalOpen(true);
+                      }}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedReminder(reminder);
+                        setDeleteModalOpen(true);
+                      }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
       </div>
+      
+      {/* Edit Modal */}
+      <EditReminderModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        reminder={selectedReminder}
+        onSave={(updatedReminder) => {
+          if (updateReminder) {
+            updateReminder(updatedReminder);
+          }
+        }}
+      />
+      
+      {/* Delete Confirmation Modal */}
+      <DeleteReminderModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        reminder={selectedReminder}
+        onDelete={deleteReminder}
+      />
     </div>
   );
 };

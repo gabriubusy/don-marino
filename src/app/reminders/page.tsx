@@ -5,13 +5,55 @@ import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import Navigation from '@/components/Navigation';
 import LoadingScreen from '@/components/LoadingScreen';
-import { Reminder } from '@/lib/types';
+import RemindersList from '@/components/RemindersList';
+import { Database } from '@/lib/database.types';
+import { Reminder as FrontendReminder } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+
+// Base de datos Reminder type
+type DbReminder = Database['public']['Tables']['Reminder']['Row'];
+
+// Función para adaptar entre los tipos de recordatorios
+const adaptToDbReminder = (reminder: FrontendReminder): DbReminder => {
+  // Convertir priority de string a número
+  let priorityNum = 1;
+  if (reminder.priority === 'medium') priorityNum = 2;
+  if (reminder.priority === 'high') priorityNum = 3;
+  
+  return {
+    id: reminder.id,
+    title: reminder.title,
+    description: reminder.description || null,
+    user_id: 'local', // Valor por defecto para recordatorios locales
+    priority: priorityNum,
+    due_date: reminder.date,
+    recurrence: null,
+    group_id: null
+  };
+};
+
+// Función para adaptar de la BD al frontend
+const adaptToFrontendReminder = (reminder: DbReminder): FrontendReminder => {
+  // Convertir priority de número a string
+  let priorityStr: 'high' | 'medium' | 'low' = 'low';
+  if (reminder.priority === 2) priorityStr = 'medium';
+  if (reminder.priority === 3) priorityStr = 'high';
+  
+  return {
+    id: reminder.id,
+    title: reminder.title,
+    description: reminder.description || undefined,
+    date: reminder.due_date,
+    completed: false, // Por defecto, los recordatorios no están completados
+    createdAt: Date.now(),
+    priority: priorityStr
+  };
+};
 
 export default function Reminders() {
   const router = useRouter();
   const { user, loading, requireAuth } = useAuth();
-  const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [reminders, setReminders] = useState<FrontendReminder[]>([]);
   const [filterStatus, setFilterStatus] = useState<'all' | 'active' | 'completed'>('all');
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -54,6 +96,27 @@ export default function Reminders() {
         reminder.id === id 
           ? {...reminder, completed: !reminder.completed}
           : reminder
+      );
+      
+      localStorage.setItem('reminders', JSON.stringify(updated));
+      return updated;
+    });
+  };
+  
+  // Function to update a reminder
+  const updateReminder = (updatedReminder: DbReminder) => {
+    // Convertir el recordatorio de la base de datos al formato del frontend
+    const frontendReminder = adaptToFrontendReminder(updatedReminder);
+    
+    // Preservar el estado de completado del recordatorio original
+    const originalReminder = reminders.find(r => r.id === updatedReminder.id);
+    if (originalReminder) {
+      frontendReminder.completed = originalReminder.completed;
+    }
+    
+    setReminders((prev) => {
+      const updated = prev.map(reminder => 
+        reminder.id === frontendReminder.id ? frontendReminder : reminder
       );
       
       localStorage.setItem('reminders', JSON.stringify(updated));
@@ -180,74 +243,11 @@ export default function Reminders() {
         
         {/* Reminders list */}
             {filteredReminders.length > 0 ? (
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <ul className="divide-y divide-gray-100">
-                  {filteredReminders.map((reminder) => (
-                    <li key={reminder.id} className="p-4 hover:bg-gray-50 transition-colors duration-150">
-                      <div className="flex items-center space-x-4">
-                        <div className="flex-shrink-0">
-                          <div className="h-5 w-5 relative">
-                            <input
-                              type="checkbox"
-                              checked={reminder.completed}
-                              onChange={() => toggleCompletion(reminder.id)}
-                              className="h-5 w-5 text-primary rounded focus:ring-primary cursor-pointer"
-                            />
-                          </div>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-medium ${reminder.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                            {reminder.title}
-                          </p>
-                          {reminder.description && (
-                            <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                              {reminder.description}
-                            </p>
-                          )}
-                          <div className="mt-1 flex items-center">
-                            <span className="text-xs text-gray-500">{reminder.date}</span>
-
-                            {reminder?.priority && (
-                              <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                                reminder.priority === 'high' 
-                                  ? 'bg-red-50 text-red-700' 
-                                  : reminder.priority === 'medium'
-                                  ? 'bg-yellow-50 text-yellow-700'
-                                  : 'bg-green-50 text-green-700'
-                              }`}>
-                                {reminder.priority === 'high' ? 'Alta' : reminder.priority === 'medium' ? 'Media' : 'Baja'}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        {/* Reminder actions */}
-                        <div className="flex-shrink-0 flex items-center space-x-2">
-                          <button
-                            onClick={() => {
-                              // Aquí iría la lógica para editar el recordatorio
-                              alert(`Editar: ${reminder.title}`);
-                            }}
-                            className="p-1 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50"
-                          >
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                          </button>
-                          <button
-                            onClick={() => deleteReminder(reminder.id)}
-                            className="p-1 text-gray-400 hover:text-red-600 rounded-full hover:bg-red-50"
-                          >
-                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <RemindersList 
+                reminders={filteredReminders.map(adaptToDbReminder)} 
+                deleteReminder={deleteReminder} 
+                updateReminder={updateReminder}
+              />
             ) : (
               <div className="bg-white rounded-xl shadow-sm p-8 text-center border border-gray-100">
                 <div className="inline-flex items-center justify-center p-4 bg-blue-50 text-primary rounded-full mb-4">
