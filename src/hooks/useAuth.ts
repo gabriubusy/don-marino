@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { createClient, User, AuthError, SupabaseClient } from '@supabase/supabase-js';
-import { Database } from '@/lib/database.types';
+import { User, AuthError } from '@supabase/supabase-js';
+import { supabase, isUsingDummyValues } from '@/lib/supabase';
 
-// Inicializar el cliente de Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-export const supabase = createClient<Database>(supabaseUrl, supabaseKey);
+// Alerta de desarrollo si estamos usando valores de ejemplo
+if (typeof window !== 'undefined' && isUsingDummyValues) {
+  console.warn('Atención: Usando valores de ejemplo para Supabase. La funcionalidad de autenticación estará limitada.');
+}
 
 /**
  * Hook personalizado para la autenticación y gestión de usuarios
@@ -201,6 +200,14 @@ export const useAuth = () => {
    * Protección de rutas - Redireccionar si no hay sesión
    */
   const requireAuth = () => {
+    // Si estamos usando valores de ejemplo en desarrollo, permitimos el acceso
+    // Esto es solo para desarrollo local cuando no hay credenciales de Supabase
+    if (isUsingDummyValues) {
+      console.warn('Modo desarrollo: Autenticación simulada activa');
+      return; // No redireccionamos en modo desarrollo con valores simulados
+    }
+    
+    // En producción o cuando tenemos credenciales configuradas correctamente
     if (!loading && !user) {
       router.push('/login');
     }
