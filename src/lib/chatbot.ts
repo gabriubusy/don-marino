@@ -334,6 +334,46 @@ function fallbackIntentDetection(message: string): { intentName: string; paramet
       /qu[eé]\spuedes\shacer/i,
       /qu[eé]\seres/i,
       /para\squ[eé]\ssirves/i
+    ],
+    WEATHER: [
+      /clima/i,
+      /tiempo/i,
+      /pronostico/i,
+      /clima\sactual/i,
+      /tiempo\sactual/i,
+      /pronostico\sactual/i
+    ],
+    TIME_DATE: [
+      /fecha/i,
+      /hora/i,
+      /fecha\sactual/i,
+      /hora\sactual/i,
+      /fecha\sactual/i,
+      /hora\sactual/i
+    ],
+    ACTIVITIES_INFO: [
+      /actividades/i,
+      /actividad/i,
+      /actividades\sdisponibles/i,
+      /actividad\sdisponible/i,
+      /actividades\sdisponibles/i,
+      /actividad\sdisponible/i
+    ],
+    RESERVATIONS_HELP: [
+      /reservaciones/i,
+      /reservacion/i,
+      /reservaciones\sdisponibles/i,
+      /reservacion\sdisponible/i,
+      /reservaciones\sdisponibles/i,
+      /reservacion\sdisponible/i
+    ],
+    JOKES: [
+      /joke/i,
+      /jokes/i,
+      /chiste/i,
+      /chistes/i,
+      /humor/i,
+      /humores/i
     ]
   };
 
