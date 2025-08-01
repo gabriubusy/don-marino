@@ -360,14 +360,6 @@ function fallbackIntentDetection(message: string): { intentName: string; paramet
       /actividades\sdisponibles/i,
       /actividad\sdisponible/i
     ],
-    RESERVATIONS_HELP: [
-      /reservaciones/i,
-      /reservacion/i,
-      /reservaciones\sdisponibles/i,
-      /reservacion\sdisponible/i,
-      /reservaciones\sdisponibles/i,
-      /reservacion\sdisponible/i
-    ],
     JOKES: [
       /joke/i,
       /jokes/i,
@@ -516,11 +508,6 @@ export async function processMessage(message: string): Promise<ChatResponse> {
         "Tenemos actividades acuáticas, tours guiados, clases y muchas experiencias más. ¿Hay alguna categoría específica que te interese?",
         "Las actividades están organizadas por categorías en nuestra plataforma. ¿Te gustaría que te recuerde explorar alguna sección específica?"
       ],
-      RESERVATIONS_HELP: [
-        "Para hacer una reservación, debes seleccionar la actividad que te interesa y luego elegir la fecha y hora disponible. ¿Te gustaría que te cree un recordatorio para completar este proceso?",
-        "El proceso de reserva es sencillo: elige la actividad, selecciona fecha y hora, completa tus datos y confirma. ¿Necesitas que te recuerde revisar las opciones disponibles?",
-        "Puedes hacer reservaciones desde la página principal seleccionando la actividad deseada. ¿Te gustaría que te cree un recordatorio para explorar las actividades disponibles?"
-      ],
       HELP: [
         "Soy Don Mariño, tu asistente conversacional. Puedo ayudarte con:\n- Crear recordatorios (ej. 'Recuérdame llamar al médico mañana')\n- Responder preguntas sobre las actividades disponibles\n- Asistirte con información sobre reservaciones\n- Conversar sobre temas diversos\n- Contarte chistes para alegrarte el día\n¿En qué puedo ayudarte hoy?",
         "Estoy aquí para asistirte principalmente con recordatorios y responder a tus preguntas. Puedo ayudarte a organizar tu agenda, informarte sobre actividades, guiarte en el proceso de reserva y mantener una conversación amena contigo."
@@ -615,7 +602,6 @@ export async function processMessage(message: string): Promise<ChatResponse> {
       case 'JOKES':
       case 'TIME_DATE':
       case 'ACTIVITIES_INFO':
-      case 'RESERVATIONS_HELP':
       case 'HELP':
         // Seleccionar una respuesta aleatoria de la categoría
         const categoryResponses = responses[intentName];
@@ -638,7 +624,7 @@ export async function processMessage(message: string): Promise<ChatResponse> {
     }
   } catch (error) {
     console.error('Error processing message:', error);
-    return {
+    return { 
       text: 'Lo siento, ha ocurrido un error al procesar tu mensaje. Por favor, inténtalo de nuevo.'
     };
   }
